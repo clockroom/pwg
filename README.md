@@ -11,4 +11,5 @@
 
 ## License
 CRCC([https://crcc.clockroom.net/](https://crcc.clockroom.net/))に準拠
+
 Copyright (C) 2014-2023 ときかけうさぎ, ClockRoom
