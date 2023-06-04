@@ -1,6 +1,8 @@
 # Release Notes
 
 ## [Unreleased]
+### Fixed
+- 軽微な修正
 
 ## [1.4.1] - 2023-06-03
 ### Fixed
