@@ -1,6 +1,9 @@
 # Release Notes
 
 ## [Unreleased]
+### Changed
+- モジュールアップデート
+
 ### Fixed
 - 軽微な修正
 
