@@ -1,3 +1,47 @@
+<script setup lang="ts">
+import { Tab } from 'bootstrap';
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
+import Guide from './guide.vue';
+import Home from './home.vue';
+import Settings from './settings.vue';
+
+const versionYear = __PACKAGE_VERSION__.split('-');
+const version = ref(versionYear[0]);
+const year = ref(versionYear[1]);
+
+const hasPhrase = computed(() => Boolean(phrase.value));
+
+const phrase = ref(localStorage.getItem('phrase') ?? '');
+const phraseSave = ref(hasPhrase.value);
+
+const guideTabRef = useTemplateRef('guideTab');
+const homeTabRef = useTemplateRef('homeTab');
+const settingsTabRef = useTemplateRef('settingsTab');
+
+watch(phrase, () => { savePhrase(); });
+watch(phraseSave, () => { savePhrase(); });
+
+let guideTab: Tab;
+let homeTab: Tab;
+let settingsTab: Tab;
+
+onMounted(() => {
+
+	if(!guideTabRef.value || !homeTabRef.value || !settingsTabRef.value)
+		throw new Error('Template references for tabs are not found.');
+
+	guideTab = new Tab(guideTabRef.value);
+	homeTab = new Tab(homeTabRef.value);
+	settingsTab = new Tab(settingsTabRef.value);
+
+	(hasPhrase.value ? homeTab : settingsTab).show();
+});
+
+const savePhrase = (): void => {
+	localStorage.setItem('phrase', phraseSave.value ? phrase.value : '');
+};
+</script>
+
 <template>
 	<header class="sticky-top border-bottom bg-light shadow-sm mb-4">
 		<nav class="navbar navbar-light">
@@ -30,4 +74,3 @@
 		</nav>
 	</footer>
 </template>
-<script src="./app.js"></script>

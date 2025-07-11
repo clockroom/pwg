@@ -1,22 +1,27 @@
 {
   "name": "pwg",
   "private": true,
-  "version": "1.5.0.19-2025",
+  "version": "1.6.0.20-2025",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vue-tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
-    "vue": "^3.5.13"
+    "vue": "^3.5.17"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^6.2.2",
-    "vite-plugin-pwa": "^0.21.1"
+    "@types/bootstrap": "^5.2.10",
+    "@types/node": "^24.0.13",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4",
+    "vite-plugin-pwa": "^1.0.1",
+    "vue-tsc": "^2.2.12"
   }
 }

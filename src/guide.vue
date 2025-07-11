@@ -1,3 +1,10 @@
+<script setup lang="ts">
+const { version, year } = defineProps<{
+	version: string;
+	year: string;
+}>();
+</script>
+
 <template>
 	<section class="mb-5">
 		<h2>概要</h2>
@@ -54,4 +61,3 @@
 		<p class="text-end m-0">Copyright (C) <span class="d-none d-sm-inline">2014-</span>{{ year }} ときかけうさぎ, ClockRoom</p>
 	</section>
 </template>
-<script src="./guide.js"></script>

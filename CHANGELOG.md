@@ -1,5 +1,11 @@
 # Release Notes
 
+## [Unreleased]
+### Changed
+- TypeScriptに移行
+- Vue.jsをComposition APIに移行
+- パスワード生成ロジックを`PasswordGenerator`クラスに移行
+
 ## [1.5.0] - 2025-05-18
 ### Added
 - 新しいアルゴリズムを用いたパスワードのパターン(v2)を追加
