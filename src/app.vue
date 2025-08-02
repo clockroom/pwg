@@ -1,25 +1,16 @@
 <script setup lang="ts">
 import { Tab } from 'bootstrap';
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
+import { useSettingsStore } from './settings-store';
 import Guide from './guide.vue';
 import Home from './home.vue';
 import Settings from './settings.vue';
 
-const versionYear = __PACKAGE_VERSION__.split('-');
-const version = ref(versionYear[0]);
-const year = ref(versionYear[1]);
-
-const hasPhrase = computed(() => Boolean(phrase.value));
-
-const phrase = ref(localStorage.getItem('phrase') ?? '');
-const phraseSave = ref(hasPhrase.value);
+const { hasPhrase } = useSettingsStore();
 
 const guideTabRef = useTemplateRef('guideTab');
 const homeTabRef = useTemplateRef('homeTab');
 const settingsTabRef = useTemplateRef('settingsTab');
-
-watch(phrase, () => { savePhrase(); });
-watch(phraseSave, () => { savePhrase(); });
 
 let guideTab: Tab;
 let homeTab: Tab;
@@ -36,10 +27,6 @@ onMounted(() => {
 
 	(hasPhrase.value ? homeTab : settingsTab).show();
 });
-
-const savePhrase = (): void => {
-	localStorage.setItem('phrase', phraseSave.value ? phrase.value : '');
-};
 </script>
 
 <template>
@@ -55,13 +42,13 @@ const savePhrase = (): void => {
 	</header>
 	<main class="tab-content">
 		<article id="home-tab-pane" class="tab-pane container-fluid">
-			<Home :phrase="phrase" />
+			<Home />
 		</article>
 		<article id="settings-tab-pane" class="tab-pane container-fluid">
-			<Settings v-model:phrase="phrase"  v-model:phrase-save="phraseSave" />
+			<Settings />
 		</article>
 		<article id="guide-tab-pane" class="tab-pane container-fluid">
-			<Guide :version="version" :year="year" />
+			<Guide />
 		</article>
 	</main>
 	<footer class="fixed-bottom border-top bg-light">

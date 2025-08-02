@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useSettingsStore } from './settings-store';
 import Result from './result.vue';
 import An8Generator from './password-generator/an8-generator';
 import An10Generator from './password-generator/an10-generator';
@@ -10,9 +11,7 @@ import Ans12V2Generator from './password-generator/ans12v2-generator';
 import PinGenerator from './password-generator/pin-generator';
 import SignatureGenerator from './password-generator/signature-generator';
 
-const { phrase } = defineProps<{
-	phrase: string;
-}>();
+const { phrase } = useSettingsStore();
 
 const serviceName = ref('');
 const account = ref('');
@@ -21,7 +20,7 @@ const domain = computed(() => serviceName.value.match(/^https?:\/\/([^/]+)/)?.[1
 const useDomain = computed(() => serviceName.value !== domain.value);
 
 const results = computed(() => {
-	const token = domain.value + account.value + phrase;
+	const token = domain.value + account.value + phrase.value;
 	return {
 		an8: (new An8Generator(token)).generate(),
 		an10: (new An10Generator(token)).generate(),

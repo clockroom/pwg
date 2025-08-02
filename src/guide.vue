@@ -1,8 +1,5 @@
 <script setup lang="ts">
-const { version, year } = defineProps<{
-	version: string;
-	year: string;
-}>();
+import { version, year } from './app-env';
 </script>
 
 <template>

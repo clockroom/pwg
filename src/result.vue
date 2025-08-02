@@ -2,8 +2,6 @@
 import { Tooltip } from 'bootstrap';
 import { onMounted, useTemplateRef } from 'vue';
 
-const canCopy = Boolean(navigator.clipboard);
-
 const { name, placeholder, value } = defineProps<{
 	name: string;
 	placeholder: string;
@@ -11,6 +9,8 @@ const { name, placeholder, value } = defineProps<{
 }>();
 
 const copyRef = useTemplateRef('copy');
+
+const canCopy = Boolean(navigator.clipboard);
 
 let tooltip: Tooltip;
 
@@ -28,11 +28,6 @@ onMounted(() => {
 	});
 });
 
-const selectValue = (event: MouseEvent): void => {
-	const input = event.currentTarget as HTMLInputElement;
-	input.setSelectionRange(0, 100);
-};
-
 const copyValue = (): void => {
 
 	if(!canCopy)
@@ -44,6 +39,11 @@ const copyValue = (): void => {
 			tooltip.hide();
 		}, 1000);
 	});
+};
+
+const selectValue = (event: MouseEvent): void => {
+	const input = event.currentTarget as HTMLInputElement;
+	input.setSelectionRange(0, 100);
 };
 </script>
 

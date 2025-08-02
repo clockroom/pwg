@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
+import { useSettingsStore } from './settings-store';
 
-const phrase = defineModel<string>('phrase',{ required: true });
-const phraseSave = defineModel<boolean>('phraseSave',{ required: true });
+const { hasPhrase, phrase, phraseSave } = useSettingsStore();
 
 const phraseShow = ref(false);
-
-const hasPhrase = computed(() => Boolean(phrase.value));
 
 let phraseShowTimeout: ReturnType<typeof setTimeout> | null = null;
 
