@@ -2,21 +2,22 @@ import Xorshift from './xorshift';
 
 export default class PasswordGenerator {
 
-	private token: string;
-	private pattern: number[];
-	private splice: boolean;
-	private seed: number;
+	private readonly token: string;
+	private readonly pattern: readonly number[];
+	private readonly splice: boolean;
+	private readonly seed: number;
 
 	constructor(token: string, pattern: readonly number[], splice: boolean = true, seed: number = 0)
 	{
 		this.token = token;
-		this.pattern = [...pattern];
+		this.pattern = pattern;
 		this.splice = splice;
 		this.seed = seed;
 	}
 
 	public generate(): string
 	{
+		const pattern = [...this.pattern];
 		const charTable = [
 			this.charCodeArray('0123456789'),
 			this.charCodeArray('abcdefghijklmnopqrstuvwxyz'),
@@ -29,13 +30,12 @@ export default class PasswordGenerator {
 		];
 
 		const rnd = this.rootRandom(this.token, this.seed);
-		const resultLength = this.pattern.length;
 		let result = '';
 
-		for(let i = 0; i < resultLength; i++)
+		while(pattern.length > 0)
 		{
-			const patternIndex = rnd.next() % this.pattern.length;
-			const charTableIndex = this.pattern[patternIndex];
+			const patternIndex = rnd.next() % pattern.length;
+			const charTableIndex = pattern[patternIndex];
 			const chars = charTable[charTableIndex];
 			const charIndex = rnd.next() % chars.length;
 
@@ -44,7 +44,7 @@ export default class PasswordGenerator {
 			if(this.splice || charTableIndex == 3 || charTableIndex == 4)
 				chars.splice(charIndex, 1);
 
-			this.pattern.splice(patternIndex, 1);
+			pattern.splice(patternIndex, 1);
 		}
 
 		return result;
