@@ -1,31 +1,35 @@
 <script setup lang="ts">
 import { Tab } from 'bootstrap';
-import { onMounted, useTemplateRef } from 'vue';
-import { useSettingsStore } from './settings-store';
+import { onMounted, type Directive } from 'vue';
+import { useHistoryStore } from './stores/history-store';
+import { usePhraseStore } from './stores/phrase-store';
 import Guide from './guide.vue';
+import History from './history.vue';
 import Home from './home.vue';
 import Settings from './settings.vue';
 
-const { hasPhrase } = useSettingsStore();
+type PaneType = 'guide' | 'history' | 'home' | 'settings';
 
-const guideTabRef = useTemplateRef('guideTab');
-const homeTabRef = useTemplateRef('homeTab');
-const settingsTabRef = useTemplateRef('settingsTab');
+const { hasHistory, historyEnabled } = useHistoryStore();
+const { hasPhrase } = usePhraseStore();
 
-let guideTab: Tab;
-let homeTab: Tab;
-let settingsTab: Tab;
+const tabs: Record<PaneType, Tab | null> = {
+	guide: null,
+	history: null,
+	home: null,
+	settings: null,
+};
+
+const vTab: Directive<HTMLElement, PaneType> = {
+	mounted(el, binding) {
+		tabs[binding.value] = new Tab(el);
+	}
+};
 
 onMounted(() => {
-
-	if(!guideTabRef.value || !homeTabRef.value || !settingsTabRef.value)
-		throw new Error('Template references for tabs are not found.');
-
-	guideTab = new Tab(guideTabRef.value);
-	homeTab = new Tab(homeTabRef.value);
-	settingsTab = new Tab(settingsTabRef.value);
-
-	(hasPhrase.value ? homeTab : settingsTab).show();
+	if(!tabs.home || !tabs.history || !tabs.settings || !tabs.guide)
+		throw new Error('Tabs are not initialized properly.');
+	(hasPhrase.value ? tabs.home : tabs.settings).show();
 });
 </script>
 
@@ -44,6 +48,9 @@ onMounted(() => {
 		<article id="home-tab-pane" class="tab-pane container-fluid">
 			<Home />
 		</article>
+		<article id="history-tab-pane" class="tab-pane container-fluid">
+			<History />
+		</article>
 		<article id="settings-tab-pane" class="tab-pane container-fluid">
 			<Settings />
 		</article>
@@ -54,9 +61,10 @@ onMounted(() => {
 	<footer class="fixed-bottom border-top bg-light">
 		<nav>
 			<div class="nav nav-justified">
-				<a ref="homeTab" class="nav-link fs-3" :class="{ disabled: !hasPhrase }" href="#" data-bs-toggle="tab" data-bs-target="#home-tab-pane" :disabled="!hasPhrase"><i class="bi bi-key-fill"></i><span class="d-none d-lg-inline ms-2">パスワード作成</span></a>
-				<a ref="settingsTab" class="nav-link fs-3" href="#" data-bs-toggle="tab" data-bs-target="#settings-tab-pane"><i class="bi bi-gear-fill"></i><span class="d-none d-lg-inline ms-2">設定</span></a>
-				<a ref="guideTab" class="nav-link fs-3" href="#" data-bs-toggle="tab" data-bs-target="#guide-tab-pane"><i class="bi bi-info-circle-fill"></i><span class="d-none d-lg-inline ms-2">ツールについて</span></a>
+				<a class="nav-link fs-3" :class="{ disabled: !hasPhrase }" href="#" data-bs-toggle="tab" data-bs-target="#home-tab-pane" :disabled="!hasPhrase" v-tab="'home'"><i class="bi bi-key-fill"></i><span class="d-none d-lg-inline ms-2">パスワード作成</span></a>
+				<a class="nav-link fs-3" :class="{ disabled: !hasPhrase || !hasHistory }" href="#" data-bs-toggle="tab" data-bs-target="#history-tab-pane" :disabled="!hasPhrase || !hasHistory" v-show="historyEnabled" v-tab="'history'"><i class="bi bi-clock-history"></i><span class="d-none d-lg-inline ms-2">履歴</span></a>
+				<a class="nav-link fs-3" href="#" data-bs-toggle="tab" data-bs-target="#settings-tab-pane" v-tab="'settings'"><i class="bi bi-gear-fill"></i><span class="d-none d-lg-inline ms-2">設定</span></a>
+				<a class="nav-link fs-3" href="#" data-bs-toggle="tab" data-bs-target="#guide-tab-pane" v-tab="'guide'"><i class="bi bi-info-circle-fill"></i><span class="d-none d-lg-inline ms-2">ツールについて</span></a>
 			</div>
 		</nav>
 	</footer>

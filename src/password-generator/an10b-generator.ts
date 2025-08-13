@@ -1,6 +1,6 @@
 import PasswordGenerator from './password-generator';
 
-export default class extends PasswordGenerator {
+export default class An10bGenerator extends PasswordGenerator {
 
 	constructor(token: string)
 	{

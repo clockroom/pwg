@@ -1,50 +1,61 @@
 <script setup lang="ts">
 import { Tooltip } from 'bootstrap';
-import { onMounted, useTemplateRef } from 'vue';
+import { computed, useId, type Directive } from 'vue';
+import { useTimedToggle } from './composables/timed-toggle';
 
-const { name, placeholder, value } = defineProps<{
-	name: string;
+const { mask=false, placeholder, value } = defineProps<{
+	mask?: boolean;
 	placeholder: string;
 	value: string;
 }>();
 
-const copyRef = useTemplateRef('copy');
+const emit = defineEmits<{
+	copied: [];
+}>();
+
+const { enabled: timedToggleVisible, toggle: toggleVisible } = useTimedToggle();
+
+const visible = computed(() => !mask || timedToggleVisible.value);
+const inputType = computed(() => visible.value ? 'text' : 'password');
+
+const inputId = useId();
 
 const canCopy = Boolean(navigator.clipboard);
 
 let tooltip: Tooltip;
 
-onMounted(() => {
+const vCopiedTooltip: Directive<HTMLElement> = {
+	mounted(el) {
+		if(!canCopy)
+			return;
+		tooltip = new Tooltip(el, {
+			trigger: 'manual',
+			title: 'コピーしました',
+		});
+	}
+};
 
-	if(!canCopy)
-		return;
-
-	if(!copyRef.value)
-		throw new Error('Template references for copy button is not found.');
-
-	tooltip = new Tooltip(copyRef.value, {
-		trigger: 'manual',
-		title: 'コピーしました',
-	});
-});
-
-const copyValue = (): void => {
-
+function copyValue(): void
+{
 	if(!canCopy)
 		return;
 
 	navigator.clipboard.writeText(value).then(() => {
 		tooltip.show();
+		emit('copied');
 		setTimeout(() => {
 			tooltip.hide();
 		}, 1000);
 	});
-};
+}
 
-const selectValue = (event: MouseEvent): void => {
+function selectValue(event: MouseEvent): void
+{
+	if(!visible.value)
+		return;
 	const input = event.currentTarget as HTMLInputElement;
 	input.setSelectionRange(0, 100);
-};
+}
 </script>
 
 <template>
@@ -52,12 +63,13 @@ const selectValue = (event: MouseEvent): void => {
 		<div class="col col-lg-6">
 			<div class="input-group">
 				<div class="form-floating">
-					<input type="text" :id="`result-${name}`" class="form-control form-control-lg" :value="value" :placeholder="placeholder" readonly @click="selectValue($event)">
-					<label :for="`result-${name}`">
+					<input :type="inputType" :id="inputId" class="form-control form-control-lg" :value="value" :placeholder="placeholder" :disabled="!visible" :readonly="visible" @click="selectValue($event)">
+					<label :for="inputId">
 						<slot name="label">{{ placeholder }}</slot>
 					</label>
 				</div>
-				<button type="button" ref="copy" class="btn btn-outline-secondary" :class="{ disabled: !canCopy }" :disabled="!canCopy" @click.prevent="copyValue()"><i class="bi bi-clipboard-fill"></i></button>
+				<button type="button" class="btn btn-outline-secondary" @click.prevent="toggleVisible()" v-if="mask"><i class="bi" :class="{ 'bi-eye-fill': visible, 'bi-eye-slash-fill': !visible }"></i></button>
+				<button type="button" class="btn btn-outline-secondary" :class="{ disabled: !canCopy }" :disabled="!canCopy" @click.prevent="copyValue()" v-copied-tooltip><i class="bi bi-clipboard-fill"></i></button>
 			</div>
 		</div>
 	</div>

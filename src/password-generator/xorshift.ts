@@ -3,7 +3,7 @@ const INIT_Y = 362436069;
 const INIT_Z = 521288629;
 const INIT_W = 88675123;
 
-export default class {
+export default class Xorshift {
 
 	private x: number;
 	private y: number;

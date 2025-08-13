@@ -1,10 +1,15 @@
 # Release Notes
 
 ## [Unreleased]
+
+## [1.6.3] - 2025-08-13
+### Added
+- 履歴機能を追加
+
 ### Changed
 - TypeScriptに移行
 - Vue.jsをComposition APIに移行
-- パスワード生成ロジックを`PasswordGenerator`クラスに移行
+- リファクタリング
 
 ## [1.5.0] - 2025-05-18
 ### Added

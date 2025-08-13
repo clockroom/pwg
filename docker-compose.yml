@@ -9,6 +9,5 @@ services:
       - .:/app
     working_dir: /app
     init: true
-    stop_signal: SIGHUP
     entrypoint: ["npm"]
-    command: ["run","dev"]
+    command: ["run","dev","--foreground-scripts"]

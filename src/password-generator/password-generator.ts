@@ -1,16 +1,16 @@
 import Xorshift from './xorshift';
 
-export default class {
+export default class PasswordGenerator {
 
 	private token: string;
 	private pattern: number[];
 	private splice: boolean;
 	private seed: number;
 
-	constructor(token: string, pattern: number[], splice: boolean = true, seed: number = 0)
+	constructor(token: string, pattern: readonly number[], splice: boolean = true, seed: number = 0)
 	{
 		this.token = token;
-		this.pattern = pattern;
+		this.pattern = [...pattern];
 		this.splice = splice;
 		this.seed = seed;
 	}
