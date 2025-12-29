@@ -1,7 +1,7 @@
 {
   "name": "pwg",
   "private": true,
-  "version": "1.6.3.23-2025",
+  "version": "1.7.0.24-2025",
   "type": "module",
   "scripts": {
     "dev": "vite",

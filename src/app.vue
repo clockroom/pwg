@@ -2,15 +2,15 @@
 import { Tab } from 'bootstrap';
 import { onMounted, type Directive } from 'vue';
 import { useHistoryStore } from './stores/history-store';
+import { usePaneStore, type PaneType } from './stores/pane-store';
 import { usePhraseStore } from './stores/phrase-store';
 import Guide from './guide.vue';
 import History from './history.vue';
 import Home from './home.vue';
 import Settings from './settings.vue';
 
-type PaneType = 'guide' | 'history' | 'home' | 'settings';
-
 const { hasHistory, historyEnabled } = useHistoryStore();
+const { startingPane } = usePaneStore();
 const { hasPhrase } = usePhraseStore();
 
 const tabs: Record<PaneType, Tab | null> = {
@@ -27,9 +27,16 @@ const vTab: Directive<HTMLElement, PaneType> = {
 };
 
 onMounted(() => {
-	if(!tabs.home || !tabs.history || !tabs.settings || !tabs.guide)
+
+	const startingTab =
+		!hasPhrase.value ? tabs.settings :
+		!historyEnabled.value ? tabs.home :
+		tabs[startingPane.value];
+
+	if(!startingTab)
 		throw new Error('Tabs are not initialized properly.');
-	(hasPhrase.value ? tabs.home : tabs.settings).show();
+
+	startingTab.show();
 });
 </script>
 
